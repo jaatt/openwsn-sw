@@ -42,6 +42,8 @@ from openvisualizer.BspEmulator   import VcdLogger
 
 from pydispatch import dispatcher
 
+from time import sleep
+
 class OpenVisualizerWeb(eventBusClient.eventBusClient):
     '''
     Provides web UI for OpenVisualizer. Runs as a webapp in a Bottle web
@@ -382,10 +384,18 @@ if __name__=="__main__":
         }
     )
     webthread.start()
-    
     #===== add a cli (minimal) interface
     
     banner  = []
+
+    if (app.simulatorMode == True):
+        sleep(3) #Give me a moment to load!
+        webapp._toggleRoot('0002')
+        banner += ["Mote 2 was toggled to be as DAGroot."]
+
+        webapp._setWiresharkDebug('true')
+        banner += ["Wireshark debug was enabled by default"]
+
     banner += ['OpenVisualizer']
     banner += ['web interface started at {0}:{1}'.format(argspace.host,argspace.port)]
     banner += ['enter \'q\' to exit']
