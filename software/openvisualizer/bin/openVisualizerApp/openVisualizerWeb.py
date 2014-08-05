@@ -101,6 +101,7 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         self.websrv.route(path='/topology/connections',   method='POST',  callback=self._topologyConnectionsUpdate)
         self.websrv.route(path='/topology/connections',   method='DELETE',callback=self._topologyConnectionsDelete)
         self.websrv.route(path='/topology/route',         method='GET',   callback=self._topologyRouteRetrieve)
+        self.websrv.route(path='/topology/neighbor',      method='GET',   callback=self._topologyNeighborRetrieve)
         self.websrv.route(path='/static/<filepath:path>',                 callback=self._serverStatic)
     
     @view('moteview.tmpl')
@@ -320,7 +321,26 @@ class OpenVisualizerWeb(eventBusClient.eventBusClient):
         }
         
         return data
-    
+
+    def _topologyNeighborRetrieve(self):
+
+        data = bottle.request.query
+
+        assert data.keys()==['mote']
+        moteid = "%04d" % int(data['mote'])
+
+        ms = self.app.getMoteState(moteid)
+        neighbors = json.loads(ms.getStateElem(ms.ST_NEIGHBORS).toJson('data'))
+
+		#This is probably not a good idea! to convert ip to id like this
+        neighbors = [int(n['addr'][21:23]) for n in neighbors if n['stableNeighbor'] != 0]
+
+        data = {
+            'neighbors'          : neighbors,
+            'mote'               : data['mote'],
+        }
+        return data
+
     def _getEventData(self):
         response = {
             'isDebugPkts' : 'true' if self.app.eventBusMonitor.wiresharkDebugEnabled else 'false',
@@ -387,6 +407,7 @@ if __name__=="__main__":
     #===== add a cli (minimal) interface
     
     banner  = []
+    banner += ['OpenVisualizer']
 
     if (app.simulatorMode == True):
         sleep(3) #Give me a moment to load!
@@ -396,12 +417,14 @@ if __name__=="__main__":
         webapp._setWiresharkDebug('true')
         banner += ["Wireshark debug was enabled by default"]
 
-    banner += ['OpenVisualizer']
+        webapp._setGologicDebug("true")
+        banner += ["Logic Analizer debug was enabled by default"]
+
     banner += ['web interface started at {0}:{1}'.format(argspace.host,argspace.port)]
     banner += ['enter \'q\' to exit']
     banner  = '\n'.join(banner)
     print banner
-    
+
     while True:
         input = raw_input('> ')
         if input=='q':
