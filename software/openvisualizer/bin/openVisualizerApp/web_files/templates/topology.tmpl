@@ -86,7 +86,17 @@
                         
                     }
                 )
-                
+               
+				//neighborStar
+                neighborStar = new google.maps.Polyline(
+                    {
+                        geodesic:      true,
+                        strokeOpacity: 0.8,
+                        strokeWeight:  4,
+                        strokeColor:   '#9900bb'
+                        
+                    }
+                )
                 // load mote data
                 getTopologyData();
             }
@@ -172,6 +182,11 @@
                             'mouseout',
                             hideRoute
                         );
+						google.maps.event.addListener(
+							motes[id].marker,
+							'mouseout',
+							hideNeighbor
+						);
                         attachMouseoverMarker(id);
                         attachRightClickCreateConnection(id);
                     }
@@ -289,6 +304,7 @@
                     'mouseover',
                     function(event){
                         getRoute(id);
+						getNeighbors(id);
                     }
                 );
             }
@@ -402,9 +418,50 @@
                 routeLine.setPath(routePath);
                 routeLine.setMap(map);
             }
+
+			function getNeighbors(id){
+                $.ajax({
+                    type:    "GET",
+                    url:     "/topology/neighbor",
+                    data:    {
+                        'mote': id,
+                    },
+                    success:  handleNeighbor,
+                })
+                .fail(function() {
+                    console.log("ERROR: could not GET route from server.");
+                })
+			}
+
+			function handleNeighbor(neighborData){
+
+                var neighborStarPath = [];
+                
+                for (i=0; i<neighborData.neighbors.length; i++) {
+                    neighborStarPath.push(
+                        new google.maps.LatLng(
+                            motes[neighborData.mote].lat,
+                            motes[neighborData.mote].lon
+                        )
+                    )
+                    neighborStarPath.push(
+                        new google.maps.LatLng(
+                            motes[neighborData.neighbors[i]].lat,
+                            motes[neighborData.neighbors[i]].lon
+                        )
+                    )
+                }
+                
+                neighborStar.setPath(neighborStarPath);
+                neighborStar.setMap(map);
+			}
             
             function hideRoute() {
                 routeLine.setMap(null);
+            }
+
+            function hideNeighbor() {
+                neighborStar.setMap(null);
             }
             
             function connectionCreationStep(id) {
