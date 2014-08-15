@@ -1,0 +1,4 @@
+./kill
+./log_remove
+./compile
+sudo scons runweb --sim --simCount 6 

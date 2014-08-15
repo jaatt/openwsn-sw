@@ -1,0 +1,1 @@
+sudo kill `ps aux | grep openVisualizerWeb | grep python | awk '{print $2}'`

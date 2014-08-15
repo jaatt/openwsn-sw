@@ -1,0 +1,2 @@
+sudo rm ./build/runui/openVisualizer.log
+sudo rm ./debugpins.vcd
