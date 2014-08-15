@@ -59,7 +59,7 @@ class Propagation(eventBusClient.eventBusClient):
         
     #======================== public ==========================================
     
-    def createConnection(self,fromMote,toMote):
+    def createConnection(self,fromMote,toMote, pdrtimes = -1):
         
         FREQUENCY_GHz        =    2.4
         TX_POWER_dBm         =    0.0
@@ -89,7 +89,10 @@ class Propagation(eventBusClient.eventBusClient):
                 
                 # compute reception power (first Friis, then apply Pister-hack)
                 Prx              = TX_POWER_dBm - (20*log10(d_km) + 20*log10(FREQUENCY_GHz) + 92.45)
-                Prx             -= PISTER_HACK_LOSS*random.random()
+                if pdrtimes == -1:
+                    Prx             -= PISTER_HACK_LOSS*random.random()
+                else:
+                    Prx             -= PISTER_HACK_LOSS*pdrtimes
                 
                 # turn into PDR
                 if   Prx<SENSITIVITY_dBm:

@@ -74,6 +74,8 @@ class OpenVisualizerApp(object):
                 moteHandler       = MoteHandler.MoteHandler(oos_openwsn.OpenMote())
                 self.simengine.indicateNewMote(moteHandler)
                 self.moteProbes  += [moteProbe.moteProbe(emulatedMote=moteHandler)]
+
+            self.simengine.createAllConnections()
         
         # create a moteConnector for each moteProbe
         self.moteConnectors       = [

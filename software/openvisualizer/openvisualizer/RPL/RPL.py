@@ -290,6 +290,7 @@ class RPL(eventBusClient.eventBusClient):
             source                = tup[0]
             if len(source)>8: 
                 source=source[len(source)-8:]
+            #print source    
             dao                   = tup[1]
         except IndexError:
             log.warning("DAO too short ({0} bytes), no space for destination and source".format(len(dao)))
@@ -354,18 +355,16 @@ class RPL(eventBusClient.eventBusClient):
         
         # log
         output               = []
-        output              += ['']
-        output              += ['received RPL DAO from {0}'.format(u.formatAddr(source))]
-        output              += ['- parents:']
+        output              += ['parents:']
         for p in parents:
-            output          += ['   . {0}'.format(u.formatAddr(p))]
-        output              += ['- children:']
+            output          += ['- {0}'.format(u.formatAddr(p))]
+        output              += ['children:']
         for p in children:
-            output          += ['   . {0}'.format(u.formatAddr(p))]
+            output          += ['- {0}'.format(u.formatAddr(p))]
         output               = '\n'.join(output)
         if log.isEnabledFor(logging.DEBUG):
             log.debug(output)
-        print output
+        #print output
         
         # if you get here, the DAO was parsed correctly
         

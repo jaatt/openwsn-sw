@@ -69,6 +69,17 @@ class MoteHandler(threading.Thread):
         self.id              = self.engine.idmanager.getId()
         # position of the mote
         self.location        = self.engine.locationmanager.getLocation()
+
+        #To read topology from file
+        f = open('motes.txt')
+        locations = f.readlines()
+        f.close()
+
+        self.setLocation(
+                float(locations[(self.id-1)].split()[0]), 
+                float(locations[(self.id-1)].split()[1])
+        )
+
         # stats
         self.numRxCommands   = 0
         self.numTxCommands   = 0

@@ -160,14 +160,28 @@ class SimEngine(object):
         self.moteHandlers.append(newMoteHandler)
         
         # create connections to already existing motes
-        for mh in self.moteHandlers[:-1]:
-            self.propagation.createConnection(
-                fromMote     = newMoteHandler.getId(),
-                toMote       = mh.getId(),
-            )
+        #for mh in self.moteHandlers[:-1]:
+            #self.propagation.createConnection(
+                #fromMote     = newMoteHandler.getId(),
+                #toMote       = mh.getId(),
+            #)
     
     #=== called from timeline
-    
+
+    #=== called from openVisualizerApp to create connections
+    def createAllConnections(self):
+        f = open('moteConnections.txt')
+        customConnections = f.readlines()
+        f.close()
+
+        for i in customConnections:
+            print int(i.split()[0])
+            self.propagation.createConnection(
+                fromMote     = int(i.split()[0]),
+                toMote       = int(i.split()[1]),
+                pdrtimes     = 1-float(i.split()[2])
+            )
+
     def indicateFirstEventPassed(self):
         self.stats.indicateStart()
     
