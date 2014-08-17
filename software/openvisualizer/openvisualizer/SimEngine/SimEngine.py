@@ -170,12 +170,11 @@ class SimEngine(object):
 
     #=== called from openVisualizerApp to create connections
     def createAllConnections(self):
-        f = open('moteConnections.txt')
+        f = open('_mote_connections.txt')
         customConnections = f.readlines()
         f.close()
-
+        
         for i in customConnections:
-            print int(i.split()[0])
             self.propagation.createConnection(
                 fromMote     = int(i.split()[0]),
                 toMote       = int(i.split()[1]),

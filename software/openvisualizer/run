@@ -1,4 +1,5 @@
+python mote_generator.py
 ./kill
 ./log_remove
 ./compile
-sudo scons runweb --sim --simCount 6 
+sudo scons runweb --sim --simCount 20

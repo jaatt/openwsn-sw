@@ -71,7 +71,7 @@ class MoteHandler(threading.Thread):
         self.location        = self.engine.locationmanager.getLocation()
 
         #To read topology from file
-        f = open('motes.txt')
+        f = open('_mote_positions.txt')
         locations = f.readlines()
         f.close()
 
