@@ -1,4 +1,4 @@
-python mote_generator.py
+### python mote_generator.py
 ./kill
 ./log_remove
 ./compile
